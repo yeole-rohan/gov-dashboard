@@ -1,0 +1,12 @@
+{% extends '../base.html' %}
+{% block content %}
+{% load static %}
+    <div class="container">
+        <div class="outer payments-div">
+        <h3 class="selection">पैसे भरले</h3>
+        <h3 class="selection">  Payment Approval Status From S2 Infotech International Limited</h3>
+        <img class="img-fluid" src="{% static '/img/green_circle_tick.png' %}">
+        <a type="button" class="btn btn-light" href="{% url 'portal:index' %}">Go to dashboard</a>
+        </div>
+    </div>
+{% endblock content %}

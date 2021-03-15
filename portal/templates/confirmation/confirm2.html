@@ -1,0 +1,27 @@
+{% extends '.././base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="outer payments-div">
+            <h3 class="selection">Phase</h3>
+            <small>Step two</small>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="info">
+                        <p>प्रमाणिकरण </p>
+                        <p class="sub-info pos-rel">ग्रामपंचायतीला ISO ९००१ : २०१५ प्रमाणिकरणासाठी आवश्यक असणारी सर्व कामे पूर्ण करणे</p>
+                        <p class="count">₹ 7788.00 + ₹ 1188<small>18% GST</small> = 8976.00</p>
+                    </div>
+                </div>
+            </div> 
+            </br></br>
+            <div class="form-group form-check text-center">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{confirm.yes_no}}<label class="form-check-label" for="exampleCheck1">आम्ही प्रशिक्षण व कागदपत्रे पूर्ण केली आहेत. </label>
+                    </br>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

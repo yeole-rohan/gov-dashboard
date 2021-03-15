@@ -1,0 +1,66 @@
+{% extends '../base.html' %}
+{% block content %}
+{% load static %}
+  <div class="container">
+    <div class="outer">
+    <h3> Register</h3>
+        <div class="error">
+                {% for message in messages %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="register pos-rel">
+                <form method="POST" id="register">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.last_name }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.username }}
+                        </div>
+                    </div>    
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form.password1 }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.password2 }}
+                        </div>
+                    </div>
+                    <button type="submit" class="reg-button">Register</button>
+                </form>
+                <a class="log-reg" href="{% url 'login' %}">login</a>
+            </div>
+        </div>
+    </div>
+    {% endblock content %}
+    {% block javascript %}
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/signup-user.js' %}"></script>
+
+    {% endblock javascript %}

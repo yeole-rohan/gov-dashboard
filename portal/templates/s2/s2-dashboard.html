@@ -1,0 +1,338 @@
+{% extends '../base.html' %}
+    {% block css %}
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.css">
+    {% endblock css %}
+    {% block content %}
+        <div class="outer">
+            <h3 class="selection">All Transations</h3>
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+
+                {% comment %} Pending {% endcomment %}
+                <li class="nav-item ">
+                    <a class="nav-link active" id="pills-pending-tab" data-toggle="pill" href="#pills-pending" role="tab" aria-controls="pills-pending" aria-selected="false">अनिर्णित</a>
+                </li>
+
+                {% comment %} Matched {% endcomment %}
+                <li class="nav-item">
+                    <a class="nav-link " id="pills-matched-tab" data-toggle="pill" href="#pills-matched" role="tab" aria-controls="pills-matched" aria-selected="true">Matched</a>
+                </li>
+
+                {% comment %} Unmatched {% endcomment %}
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-unmatched-tab" data-toggle="pill" href="#pills-unmatched" role="tab" aria-controls="pills-unmatched" aria-selected="false">Unmatched</a>
+                </li>
+
+                {% comment %} Work Order {% endcomment %}
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-work-tab" data-toggle="pill" href="#pills-work" role="tab" aria-controls="pills-work" aria-selected="false">Work Order</a>
+                </li>
+                
+                {% comment %} Phase {% endcomment %}
+                <li class="nav-item">
+                    <a class="nav-link " id="pills-phase-tab" data-toggle="pill" href="#pills-phase" role="tab" aria-controls="pills-phase" aria-selected="true">Phase</a>
+                </li>
+                    {% comment %} Audit {% endcomment %}
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-audit-tab" data-toggle="pill" href="#pills-audit" role="tab" aria-controls="pills-audit" aria-selected="false">Audit</a>
+                </li>
+                    {% comment %} Audit Completed {% endcomment %}
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-audit-com-tab" data-toggle="pill" href="#pills-audit-com" role="tab" aria-controls="pills-audit-com" aria-selected="false">Audit Completed</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                {% comment %} अनिर्णित {% endcomment %}
+                <div class="tab-pane fade show active" id="pills-pending" role="tabpanel" aria-labelledby="pills-pending-tab">
+                    <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sortable="true">ID</th>
+                            <th scope="col" data-sortable="true">District</th>
+                            <th scope="col" data-sortable="true">Taluka</th>
+                            <th scope="col" data-sortable="true">Grampanchayat</th>
+                            <th scope="col" data-sortable="true">Name</th>
+                            <th scope="col" data-sortable="true">Mobile</th>
+                            <th scope="col" data-sortable="true">Designation</th>
+                            <th scope="col" data-sortable="true">UTR/PaymentID</th>
+                            <th scope="col" data-sortable="true">Phase</th>
+                            <th scope="col" data-sortable="true">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in all_pending_payments %}
+                            <tr>
+                                {% for pay_user in payment.user.all %}
+                                    <td>{{ payment.id }}</td>
+                                    <td>{{ pay_user.district }}</td>
+                                    <td>{{ pay_user.taluka }}</td>
+                                    <td>{{ pay_user.panchayat }}</td>
+                                    <td>{{ pay_user.first_name }} {{ pay_user.last_name }}</td>
+                                    <td>{{ pay_user.phone_number }}</td>
+                                    <td>{{ pay_user.get_designation_display }}</td>
+                                    <td>{{ payment.utrno }}</td>
+                                    <td>{{ payment.phaseno }}</td>
+                                    <td><a href="{% url 'portal:confirm_payment' payment.id pay_user.user.id %}">Action</a></td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    
+                    </table>
+                </div>
+                {% comment %} Matched {% endcomment %}
+                <div class="tab-pane fade  " id="pills-matched" role="tabpanel" aria-labelledby="pills-matched-tab">
+                    <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sortable="true">ID</th>
+                            <th scope="col" data-sortable="true">District</th>
+                            <th scope="col" data-sortable="true">Taluka</th>
+                            <th scope="col" data-sortable="true">Grampanchayat</th>
+                            <th scope="col" data-sortable="true">Name</th>
+                            <th scope="col" data-sortable="true">Mobile</th>
+                            <th scope="col" data-sortable="true">Designation</th>
+                            <th scope="col" data-sortable="true">UTR/PaymentID</th>
+                            <th scope="col" data-sortable="true">Phase</th>
+                            <th scope="col" data-sortable="true">Remark</th>
+                            <th scope="col" data-sortable="true">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in all_matched_payments %}
+                            <tr>
+                                {% for pay_user in payment.user.all %}
+                                    <td>{{ payment.id }}</td>
+                                    <td>{{ pay_user.district }}</td>
+                                    <td>{{ pay_user.taluka }}</td>
+                                    <td>{{ pay_user.panchayat }}</td>
+                                    <td>{{ pay_user.first_name }} {{ pay_user.last_name }}</td>
+                                    <td>{{ pay_user.phone_number }}</td>
+                                    <td>{{ pay_user.get_designation_display }}</td>
+                                    <td>{{ payment.utrno }}</td>
+                                    <td>{{ payment.phaseno }}</td>
+                                    <td>{{ payment.remark }}</td>
+                                    <td>{{ payment.get_status_display }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                 {% comment %} Unmatched {% endcomment %}
+                <div class="tab-pane fade" id="pills-unmatched" role="tabpanel" aria-labelledby="pills-unmatched-tab">
+                    <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sortable="true">ID</th>
+                            <th scope="col" data-sortable="true">District</th>
+                            <th scope="col" data-sortable="true">Taluka</th>
+                            <th scope="col" data-sortable="true">Grampanchayat</th>
+                            <th scope="col" data-sortable="true">Name</th>
+                            <th scope="col" data-sortable="true">Mobile</th>
+                            <th scope="col" data-sortable="true">Designation</th>
+                            <th scope="col" data-sortable="true">UTR/PaymentID</th>
+                            <th scope="col" data-sortable="true">Phase</th>
+                            <th scope="col" data-sortable="true">Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in all_unmatched_payments %}
+                            <tr>
+                                {% for pay_user in payment.user.all %}
+                                    <td>{{ payment.id }}</td>
+                                    <td>{{ pay_user.district }}</td>
+                                    <td>{{ pay_user.taluka }}</td>
+                                    <td>{{ pay_user.panchayat }}</td>
+                                    <td>{{ pay_user.first_name }} {{ pay_user.last_name }}</td>
+                                    <td>{{ pay_user.phone_number }}</td>
+                                    <td>{{ pay_user.get_designation_display }}</td>
+                                    <td>{{ payment.utrno }}</td>
+                                    <td>{{ payment.phaseno }}</td>
+                                    <td>{{ payment.remark }}</td>
+                                    <td>{{ payment.get_status_display }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                {% comment %} Audit {% endcomment %}
+                <div class="tab-pane fade  " id="pills-audit" role="tabpanel" aria-labelledby="pills-audit-tab">
+                    <form method="POST">
+                    {% csrf_token %}
+                        <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
+                            <thead>
+                                <tr>
+                                <th scope="col" data-sortable="true">Date</th>
+                                    <th scope="col" data-sortable="true">Document</th>
+                                    <th scope="col" data-sortable="true">Grampanchayat</th>
+                                    <th scope="col" data-sortable="true">Phase</th>
+                                    <th scope="col" data-field="state" data-checkbox="true"></th>
+                                    <th scope="col" data-sortable="true">Status</th>
+                                    <th scope="col" data-sortable="true">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for audit in all_pending_audits %}
+                                    <tr>
+                                        {% for user in audit.user.all %}
+                                            <td>{{audit.date}}</td>
+                                            <td><a target="_blank" href="/media/{{audit.document}}">{{audit.document.name}}</a></td>
+                                            <td>{{user.first_name}} {{user.last_name}}</td>
+                                            <td>{{audit.phaseno}}</td>
+                                            <td>{{ audit_form.select_check}}</td>
+                                            <td>{{audit.get_status_display}}</td>
+                                            <td><a href="{% url 'portal:audit-approve' audit.id %}">Action</a></td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                           
+                            </tbody>
+                        </table>
+                        <div class="text-right">
+                            <button type="submit" class="pay" name="audit-submit">Submit</button>
+                        </div>
+                    </form>
+                    <div class="text-right">
+                    <p>Total amount to pay :- ₹8260 </p>
+                    <div>
+                    <input type="number" name="" maxlength="10000000000000000" required="" id="" placeholder="Enter 16 Digit UTR Number">
+                        <script src="https://checkout.razorpay.com/v1/checkout.js"
+                            data-key="rzp_test_RFsHcz1H7YbOw2" // Enter the Test API Key ID generated from Dashboard → Settings → API Keys    
+                            data-amount="8976000" // Amount is in currency subunits. Hence, 29935 refers to 29935 paise or ₹299.35.
+                            data-currency="INR"//You can accept international payments by changing the currency code. Contact our Support Team to enable International for your account
+                            data-order_id="{{ payment.id }}"//Replace with the order_id generated by you in the backend.    
+                            data-buttontext="Select Net Banking"    
+                            data-image="https://example.com/your_logo.jpg"
+                            data-prefill.name="Gaurav Kumar"    
+                            data-prefill.email="gaurav.kumar@example.com"    
+                            data-theme.color="#F37254">
+                        </script>
+                        <button class="pay" style="width:160px;"  type="submit">Pay</button>
+                    </div> 
+                    </div>
+                </div>
+                 {% comment %} Audit Completed {% endcomment %}
+                <div class="tab-pane fade  " id="pills-audit-com" role="tabpanel" aria-labelledby="pills-audit-com-tab">
+                    <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
+                    <thead>
+                        <tr>
+                        <th scope="col" data-sortable="true">Date</th>
+                            <th scope="col" data-sortable="true">Document</th>
+                            <th scope="col" data-sortable="true">Grampanchayat</th>
+                            <th scope="col" data-sortable="true">Phase</th>                            
+                            <th scope="col" data-sortable="true"> Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for audit in all_matched_audits %}
+                            <tr>
+                                {% for user in audit.user.all %}
+                                    <td>{{audit.date}}</td>
+                                    <td><a target="_blank" href="/media/{{audit.document}}">{{audit.document.name}}</a></td>
+                                    <td>{{user.first_name}} {{user.last_name}}</td>
+                                    <td>{{audit.phaseno}}</td>
+                                  
+                                    <td>{{audit.get_status_display}}</td>
+                                    
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                {% comment %} phase {% endcomment %}
+                <div class="tab-pane fade  " id="pills-phase" role="tabpanel" aria-labelledby="pills-phase-tab">
+                    <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sortable="true">ID</th>
+                            <th scope="col" data-sortable="true">Date</th>
+                            <th scope="col" data-sortable="true">UTR/PaymentID</th>
+                            <th scope="col" data-sortable="true">Grampanchayat</th>
+                            <th scope="col" data-sortable="true">Phase</th>
+                            <th scope="col" data-field="state" data-checkbox="true">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in all_matched_payments %}
+                            <tr>
+                                {% for pay_user in payment.user.all %}
+                                    <td>{{ payment.id }}</td>
+                                    <td>{{ payment.date }}</td>
+                                    <td>{{ payment.utrno }}</td>
+                                    <td>{{ pay_user.first_name }} {{ pay_user.last_name }}</td>
+                                    <td>{{ payment.phaseno }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                    <div class="text-right">
+                    <p>Total amount to pay :- ₹17952 </p>
+                    <div>
+                    <input type="number" name="" maxlength="10000000000000000" required="" id="" placeholder="Enter 16 Digit UTR Number">
+                        <script src="https://checkout.razorpay.com/v1/checkout.js"
+                            data-key="rzp_test_RFsHcz1H7YbOw2" // Enter the Test API Key ID generated from Dashboard → Settings → API Keys    
+                            data-amount="8976000" // Amount is in currency subunits. Hence, 29935 refers to 29935 paise or ₹299.35.
+                            data-currency="INR"//You can accept international payments by changing the currency code. Contact our Support Team to enable International for your account
+                            data-order_id="{{ payment.id }}"//Replace with the order_id generated by you in the backend.    
+                            data-buttontext="Select Net Banking"    
+                            data-image="https://example.com/your_logo.jpg"
+                            data-prefill.name="Gaurav Kumar"    
+                            data-prefill.email="gaurav.kumar@example.com"    
+                            data-theme.color="#F37254">
+                        </script>
+                        <button class="pay" style="width:160px;"  type="submit">Pay</button>
+                        </div> 
+                        </div>  
+                </div>
+                {% comment %} Work Order {% endcomment %}
+                <div class="tab-pane fade" id="pills-work" role="tabpanel" aria-labelledby="pills-work-tab">
+                    <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
+                    <thead>
+                        <tr>
+                        <th scope="col" data-sortable="true">ID</th>
+                        <th scope="col" data-sortable="true">District</th>
+                        <th scope="col" data-sortable="true">Taluka</th>
+                        <th scope="col" data-sortable="true">Grampanchayat</th>
+                        <th scope="col" data-sortable="true">Name</th>
+                        <th scope="col" data-sortable="true">Mobile</th>
+                        <th scope="col" data-sortable="true">Designation</th>
+                        <th scope="col" data-sortable="true">UTR/PaymentID</th>
+                        <th scope="col" data-sortable="true">Remark</th>
+                        <th scope="col" data-sortable="true">Special Approvel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Work Order is Ready</button>
+                        {% for payment in all_matched_payments %}
+                            <tr>
+                                {% for pay_user in payment.user.all %}
+                                    <td>{{ payment.id }}</td>
+                                    <td>{{ pay_user.district }}</td>
+                                    <td>{{ pay_user.taluka }}</td>
+                                    <td>{{ pay_user.panchayat }}</td>
+                                    <td>{{ pay_user.first_name }} {{ pay_user.last_name }}</td>
+                                    <td>{{ pay_user.phone_number }}</td>
+                                    <td>{{ pay_user.get_designation_display }}</td>
+                                    <td>{{ payment.utrno }}</td>
+                                    <td>{{ payment.remark }}</td>
+                                    <td>{{ payment.get_status_display }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endblock content %}
+    {% block javascript %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
+    {% endblock javascript %}

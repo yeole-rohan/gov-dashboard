@@ -1,0 +1,47 @@
+{% extends '.././base.html' %}
+{% block content %}
+{% load static %}
+    <div class="container">
+        <div class="outer payments-div">
+            <h3 class="selection">Phase</h3>
+            <small>Step Three</small>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="info">
+                        <p>प्रमाणिकरणापूर्वीचे परिक्षण</p>
+                        <p class="sub-info pos-rel">(Pre-Certification Audit)</p>
+                        <p class="count">₹ 7788.00 + ₹ 1188<small>18% GST</small> = 8976.00</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                {% if audit_obj %}
+                    <img class="img-fluid" src="{% static '/img/green_circle_tick.png' %}">
+                    {% else %}
+                        <form method="POST" enctype='multipart/form-data'>
+                        {% csrf_token %}
+                        {{audit.document}}
+                        <button class="pay" name='audit' type="submit">Submit</button>
+                    </form>
+                {% endif %}
+                   
+                </div>
+            </div> 
+            </br></br>
+            {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+            <div class="form-group form-check text-center">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{confirm.yes_no}}<label class="form-check-label" for="exampleCheck1">मी पुष्टी केली, आम्ही पूर्व-ऑडिट यशस्वीरित्या पूर्ण केले. </label>
+                    </br>
+                    <button type="submit" name="confirm" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

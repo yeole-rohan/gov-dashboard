@@ -1,0 +1,88 @@
+{% extends './base.html' %}
+{% block css %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.css">
+{% endblock css %}
+{% block title %}Dashboard | Government of Maharashtra{% endblock title %}
+{% block content %}
+    {% load static %}
+        <div class="outer">
+        <h4>All Grampanchatas progess</h4>
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                {% comment %} Details {% endcomment %}
+                <li class="nav-item ">
+                    <a class="nav-link active" id="pills-details-tab" data-toggle="pill" href="#pills-details" role="tab" aria-controls="pills-details" aria-selected="false">Details</a>
+                </li>
+
+                {% comment %} gp-details {% endcomment %}
+                <li class="nav-item">
+                    <a class="nav-link " id="pills-gp-details-tab" data-toggle="pill" href="#pills-gp-details" role="tab" aria-controls="pills-gp-details" aria-selected="true">GP Details</a>
+                </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+                {% comment %} Details {% endcomment %}
+                <div class="tab-pane fade show active" id="pills-pending" role="tabpanel" aria-labelledby="pills-pending-tab">
+                    <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
+                        <thead>
+                            <tr>
+                                <th scope="col" data-sortable="true">ID</th>
+                                <th scope="col" data-sortable="true">Name</th>
+                                <th scope="col" data-sortable="true">Date</th>
+                                <th scope="col" data-sortable="true">UTR Number</th>
+                                <th scope="col" data-sortable="true">S2 Approve</th>
+                                <th scope="col" data-sortable="true">phase</th>
+                                <th scope="col" data-sortable="true">District</th>
+                                <th scope="col" data-sortable="true">Taluka</th>
+                                <th scope="col" data-sortable="true">Panchayat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in all_matched_payments %}
+                                <tr>
+                                {% for pay_user in payment.user.all %}
+                                    <td>{{ payment.id }}</td>
+                                    <td>{{ pay_user.first_name }} {{ pay_user.last_name }}</td>
+                                    <td>{{ payment.date }}</td>
+                                    <td>{{ payment.utrno }}</td>
+                                    <td>{{ payment.get_status_display }}</td>
+                                    <td>{{ pay_user.district }}</td>
+                                    <td>{{ pay_user.taluka }}</td>
+                                    <td>{{ pay_user.panchayat }}</td>
+                                {% endfor %}
+                                 </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% comment %} gp-details {% endcomment %}
+                <div class="tab-pane fade  " id="pills-gp-details" role="tabpanel" aria-labelledby="pills-gp-details-tab">
+                    <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sortable="true">Total no. of GPs</th>
+                            <th scope="col" data-sortable="true">No.of gps approved</th>
+                            <th scope="col" data-sortable="true">No. of gps pending</th>
+                            <th scope="col" data-sortable="true">No. of gps not applied</th>
+                            <th scope="col" data-sortable="true">No. of gps appointed other private agencies</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ all_users }}</td>
+                            <td>{{ get_count_confirm }}</td>
+                            <td>{{ get_count_confirm_pending }}</td>
+                            <td></td>
+                            <td>{{get_count_local}}</td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+            
+        </div>
+{% endblock %}
+   {% block javascript %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
+    {% endblock javascript %}

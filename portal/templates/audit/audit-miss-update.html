@@ -1,0 +1,13 @@
+{% extends '../base.html' %}
+{% block content %}
+<div class="container">
+    <div class="outer">
+    <h4>please upload correct Document</h4>
+        <form method="POST" enctype='multipart/form-data'>
+        {% csrf_token %}
+            {{ audit_form.files }}
+            <button type="submit" class="pay">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

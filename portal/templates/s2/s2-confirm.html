@@ -1,0 +1,31 @@
+{% extends '../base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="outer">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">UTR Number</th>
+                <th scope="col">Approve</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>                  
+                    <td >{{get_payment.date}}</td>
+                    <td >{{ get_payment.utrno }}</td>
+                    <td>
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{pay_approve.pay}}
+                            {{pay_approve.remark}}
+                            <p>If utr is unmatched, its required to add remark.</p>
+                            <button type="submit" class="pay">Confirm</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+{% endblock content %}

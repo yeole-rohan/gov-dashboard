@@ -1,0 +1,28 @@
+{% extends '.././base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="outer payments-div">
+            <h3 class="selection">Phase</h3>
+             <small>Stage One</small>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="info">
+                            <p>जागृतता आणि गुणवत्ता प्रशिक्षण </p>
+                            <p class="sub-info pos-rel">ISO ९००१:२०१५ जागृतता आणि गुणवत्ता व्यवस्थापनाची तत्वे : याबाबत प्रशिक्षण कार्यशाळेचे आयोजन</p>
+                            <p class="count">₹ 7788.00 + ₹ 1188<small>18% GST</small> = 8976.00</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                    <form method="POST">
+                    {% csrf_token %}
+                        <div class="form-group form-check text-center">
+                            <label class="form-check-label" for="exampleCheck1">मी याद्वारे पुष्टी करतो, मी प्रशिक्षण आणि कागदपत्रांसाठी जात आहे.</label>
+                            {{ confirm.yes_no }}
+                        </div>
+                        <button type="submit" class="btn pay btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+        </div>
+    </div>
+{% endblock content %}

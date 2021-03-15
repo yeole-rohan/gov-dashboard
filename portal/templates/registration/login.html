@@ -1,0 +1,60 @@
+{% extends '../base.html' %}
+{% block title %}Login | Government of Maharashtra{% endblock title %}
+{% block content %}
+    {% load static %}
+     <div class="container">
+        <div class="outer">
+            <div class="error">
+                {% for message in messages %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="{% static '/img/mapMaharashtraM.jpg' %}" class="img-fluid maha" alt="Maharashtra map">
+                </div>
+                <div class="col-md-6">
+                    <div class="login">
+                        <div class="login-form">
+                            <h3>आपले स्वागत आहे</h3>
+                            <h5>Login</h5>
+                            <form method="POST" class="pos-rel">
+                                {% csrf_token %}
+                                <div class="form-group pos-rel">
+                                    {{ form.username }}
+                                </div>
+                                <div class="form-group pos-rel">
+                                    {{ form.password }}
+                                </div>
+                                <a href="{% url 'password_reset' %}" class="a-link">Forgot Password?</a>
+                                <button type="submit" class="login-button">Login</button>
+                            </form>
+                            <a href="{% url 'portal:gp' %}" class="a-link new">New User</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

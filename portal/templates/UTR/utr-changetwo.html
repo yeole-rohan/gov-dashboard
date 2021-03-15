@@ -1,0 +1,32 @@
+{% extends '../base.html' %}
+{% block content %}{{UTRapproveForm}}
+    <div class="container">
+        <div class="outer payments-div">
+            <h3 class="selection">स्टेज पेमेंट change</h3>
+            <div class="agency-selection">
+                <ul class="ul">
+                    <li class="payments"> 
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="info">
+                                    <p class="count">₹ 7788.00 + ₹ 1188<small>18% GST</small> = 8976.00</p>
+                                </div>
+                                <p>Remark</p>
+                                <p class="mismatched">{{paymiss.remark}}.</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p>खाली इनपुट फील्डमध्ये आपली आरटीजीएस संख्या प्रविष्ट करा</p>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    {{utrform.utr}}
+                                    <button type="submit" class="sel-rtgs pay">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% comment %} <a href="{% url 'portal:pays' %}" type="button" class="btn btn-primary">Submit</a> {% endcomment %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
