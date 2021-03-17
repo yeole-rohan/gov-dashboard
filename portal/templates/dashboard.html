@@ -35,6 +35,9 @@
             {% elif request.user.is_observar %}
               <h4>Click on below link.</h4>
               <a class="dash" href="{% url 'portal:observar' %}">Dashboard</a>
+              {% elif request.user.is_ceo %}
+              <h4>Click on below link.</h4>
+              <a class="dash" href="{% url 'portal:ceodashboard' %}">Dashboard</a>
             {% endif %}
         </div>
     </div>

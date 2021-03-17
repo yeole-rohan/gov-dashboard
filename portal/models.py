@@ -157,15 +157,15 @@ class Audit(models.Model):
     def __str__(self):
         return str(self.id)
 
-class Servilence(models.Model):
+class ServilenceAudit(models.Model):
     user = models.ManyToManyField("Grampanchayat", verbose_name="Grampanchayat Servilence")
     date = models.DateTimeField( auto_now=True)
-    document = models.ImageField( upload_to="document/", height_field=None, width_field=None, max_length=None)
+    document = models.FileField(upload_to="document/", max_length=100)
     phoseno = models.PositiveSmallIntegerField()
-
+    status = models.CharField(choices=PAYMENT_STATUS, max_length=1000,default="pending")
     class Meta:
-        verbose_name = "Servilence"
-        verbose_name_plural = "Servilences"
+        verbose_name = "ServilenceAudit"
+        verbose_name_plural = "ServilenceAudits"
 
     def __str__(self):
         return str(self.id)
@@ -173,10 +173,10 @@ class Servilence(models.Model):
 class ServilencePayment(models.Model):
     user = models.ManyToManyField("Grampanchayat", verbose_name="Grampanchayat ServilencePayment")
     date = models.DateTimeField( auto_now=True)
-    phoseno = models.PositiveSmallIntegerField()
+    phaseno = models.PositiveSmallIntegerField()
     utrno = models.PositiveIntegerField()
-    remark = models.CharField(max_length=500)
-    status = models.CharField(choices=PAYMENT_STATUS, max_length=1000)
+    remark = models.CharField(max_length=500,default="None")
+    status = models.CharField(choices=PAYMENT_STATUS, max_length=1000,default="pending")
     class Meta:
         verbose_name = "ServilencePayment"
         verbose_name_plural = "ServilencePayments"
@@ -193,3 +193,22 @@ class Agency(models.Model):
 
     def __str__(self):
         return str(self.choose_goverment) + ' ' + str(self.choose_local)
+
+class PrivateAgency(models.Model):
+    user = models.OneToOneField("Grampanchayat", verbose_name="user_agency_data", on_delete=models.CASCADE)
+    agency_name = models.CharField( max_length=500)
+    cost = models.PositiveIntegerField()
+    cert_cost = models.PositiveIntegerField()
+    address = models.CharField( max_length=5000)
+    phone_regex = RegexValidator(regex=r'^\d{10,10}$', message="Phone number must be entered in the format: '1234567890'. Up to 10 digits allowed.")
+    phone_number = models.CharField(validators=[phone_regex], max_length=12, blank=True)
+    doc = models.FileField( upload_to="document/", max_length=100)
+    date = models.DateTimeField( auto_now=True)
+    email = models.EmailField( max_length=254)
+    status = models.CharField(choices=PAYMENT_STATUS, max_length=1000,default="pending")
+    class Meta:
+        verbose_name = "PrivateAgency"
+        verbose_name_plural = "PrivateAgencys"
+
+    def __str__(self):
+        return str(self.agency_name)

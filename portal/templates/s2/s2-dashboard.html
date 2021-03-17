@@ -5,6 +5,32 @@
     {% endblock css %}
     {% block content %}
         <div class="outer">
+          <div class="error">
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
             <h3 class="selection">All Transations</h3>
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 
@@ -76,6 +102,22 @@
                                 {% endfor %}
                             </tr>
                         {% endfor %}
+                        {% for payment in servilencePay_pending %}
+                            <tr>
+                                {% for pay_user in payment.user.all %}
+                                    <td>{{ payment.id }}</td>
+                                    <td>{{ pay_user.district }}</td>
+                                    <td>{{ pay_user.taluka }}</td>
+                                    <td>{{ pay_user.panchayat }}</td>
+                                    <td>{{ pay_user.first_name }} {{ pay_user.last_name }}</td>
+                                    <td>{{ pay_user.phone_number }}</td>
+                                    <td>{{ pay_user.get_designation_display }}</td>
+                                    <td>{{ payment.utrno }}</td>
+                                    <td>{{ payment.phaseno }} (Surveillance)</td>
+                                    <td><a href="{% url 'portal:servi_pay_confirm' pay_user.user.id  payment.id  %}">Action</a></td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
                     </tbody>
                     
                     </table>
@@ -116,6 +158,23 @@
                                 {% endfor %}
                             </tr>
                         {% endfor %}
+                        {% for payment in all_matched_servilencePay %}
+                            <tr>
+                                {% for pay_user in payment.user.all %}
+                                    <td>{{ payment.id }}</td>
+                                    <td>{{ pay_user.district }}</td>
+                                    <td>{{ pay_user.taluka }}</td>
+                                    <td>{{ pay_user.panchayat }}</td>
+                                    <td>{{ pay_user.first_name }} {{ pay_user.last_name }}</td>
+                                    <td>{{ pay_user.phone_number }}</td>
+                                    <td>{{ pay_user.get_designation_display }}</td>
+                                    <td>{{ payment.utrno }}</td>
+                                    <td>{{ payment.phaseno }} ( Surveillance )</td>
+                                    <td>{{ payment.remark }}</td>
+                                    <td>{{ payment.get_status_display }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
                     </tbody>
                     </table>
                 </div>
@@ -138,6 +197,23 @@
                     </thead>
                     <tbody>
                         {% for payment in all_unmatched_payments %}
+                            <tr>
+                                {% for pay_user in payment.user.all %}
+                                    <td>{{ payment.id }}</td>
+                                    <td>{{ pay_user.district }}</td>
+                                    <td>{{ pay_user.taluka }}</td>
+                                    <td>{{ pay_user.panchayat }}</td>
+                                    <td>{{ pay_user.first_name }} {{ pay_user.last_name }}</td>
+                                    <td>{{ pay_user.phone_number }}</td>
+                                    <td>{{ pay_user.get_designation_display }}</td>
+                                    <td>{{ payment.utrno }}</td>
+                                    <td>{{ payment.phaseno }} (Surveillance)</td>
+                                    <td>{{ payment.remark }}</td>
+                                    <td>{{ payment.get_status_display }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        {% for payment in all_unmatched_servilencePay %}
                             <tr>
                                 {% for pay_user in payment.user.all %}
                                     <td>{{ payment.id }}</td>
@@ -187,7 +263,19 @@
                                         {% endfor %}
                                     </tr>
                                 {% endfor %}
-                           
+                           {% for audit in all_pending_audits_ser %}
+                                    <tr>
+                                        {% for user in audit.user.all %}
+                                            <td>{{audit.date}}</td>
+                                            <td><a target="_blank" href="/media/{{audit.document}}">{{audit.document.name}}</a></td>
+                                            <td>{{user.first_name}} {{user.last_name}}</td>
+                                            <td>{{audit.phoseno}}(Servilence)</td>
+                                            <td>{{ audit_form.select_check}}</td>
+                                            <td>{{audit.get_status_display}}</td>
+                                            <td><a href="{% url 'portal:ser_audit_approve' audit.id %}">Action</a></td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                         <div class="text-right">
@@ -236,6 +324,17 @@
                                   
                                     <td>{{audit.get_status_display}}</td>
                                     
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        {% for audit in all_matched_audits_ser %}
+                            <tr>
+                                {% for user in audit.user.all %}
+                                    <td>{{audit.date}}</td>
+                                    <td><a target="_blank" href="/media/{{audit.document}}">{{audit.document.name}}</a></td>
+                                    <td>{{user.first_name}} {{user.last_name}}</td>
+                                    <td>{{audit.phoseno}} (Servilence)</td>
+                                    <td>{{audit.get_status_display}}</td>
                                 {% endfor %}
                             </tr>
                         {% endfor %}

@@ -20,7 +20,6 @@
             <p class="head">Government of Maharashtra</p>
             {% if request.user.is_authenticated %}
               <div class="name-log">
-                <p class="user-name">MR. {{ request.user }}</p>
                 <a href="{% url 'logout' %}">Logout</a>
               </div>
             {% endif %}

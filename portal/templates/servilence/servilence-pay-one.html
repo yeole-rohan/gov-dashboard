@@ -1,0 +1,50 @@
+{% extends '../base.html' %}
+{% block content %}
+    <div class="container">
+      <div class="error">
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+        <div class="outer">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="info">
+                        <p>Surveillance Audit for First Year </p>
+                        <p class="sub-info pos-rel">सर्विलन्स ऑणडर्साठी प्रणत ग्रामपंचायत प्रणत िर </p>
+                        <p class="count">₹ 7000 + ₹ 1,260 <small>18% GST</small> = 8260.00</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h6>Enter RTGS Number In below Text field</h6>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{servi_pay.utrno}}
+                        <button class="pay" type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        <div>
+    </div>
+{% endblock content %}

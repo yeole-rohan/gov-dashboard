@@ -1,0 +1,45 @@
+{% extends '../base.html' %}
+{% block content %}
+    <div class="container">
+      <div class="error">
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+        <div class="outer payments-div">
+            <div class="info">
+                <p>Surveillance Audit for First Year </p>
+                <p class="sub-info pos-rel">सर्विलन्स ऑणडर्साठी प्रणत ग्रामपंचायत प्रणत िर </p>
+                <p class="count">₹ 7000 + ₹ 1,260 <small>18% GST</small> = 8260.00
+            </div>
+            <h3 class="selection"> Payment Approval Status From S2 Infotech International Limited</h3>
+            <h4 class="mismatched">UTR number missmatched, please check the UTR and submit again.</h4>
+            <a class="btn" href="{% url 'portal:servi_utr_edit' pay.id %}">Edit</a>
+        </div>
+    </div>
+{% endblock content %}
+    
+                                    
+  
+        

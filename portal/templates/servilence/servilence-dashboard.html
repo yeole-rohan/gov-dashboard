@@ -1,0 +1,129 @@
+{% extends '../base.html' %}
+{% block css %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.css">
+{% endblock css %}
+{% block content %}
+<div class="container">
+  <div class="error">
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+        <div class="outer">
+            <h3 class="selection">Your Progress yet</h3>
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+
+            {% comment %} Agency {% endcomment %}
+            <li class="nav-item ">
+              <a class="nav-link disabled" id="pills-agency-tab" data-toggle="pill" href="#pills-agency" role="tab" aria-controls="pills-agency" aria-selected="false">Agency</a>
+            </li>
+
+            {% comment %} Payment {% endcomment %}
+            <li class="nav-item">
+              <a class="nav-link disabled" id="pills-payment-tab" data-toggle="pill" href="#pills-payment" role="tab" aria-controls="pills-payment" aria-selected="true">Payment</a>
+            </li>
+           
+            {% comment %} Phase {% endcomment %}
+            <li class="nav-item">
+              <a class="nav-link disabled" id="pills-phase-tab" data-toggle="pill" href="#pills-phase" role="tab" aria-controls="pills-phase" aria-selected="true">Phase</a>
+            </li>
+             {% comment %} Audit {% endcomment %}
+            <li class="nav-item">
+              <a class="nav-link active" id="pills-audit-tab" data-toggle="pill" href="#pills-audit" role="tab" aria-controls="pills-audit" aria-selected="false">Audit</a>
+            </li>
+            
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+             <div class="tab-pane fade" id="pills-agency" role="tabpanel" aria-labelledby="pills-agency-tab">
+              आपण सरकारी निवडलेली एजन्सी निवडली आहे
+             </div>
+              <div class="tab-pane fade" id="pills-payment" role="tabpanel" aria-labelledby="pills-payment-tab">
+                आपण आगाऊ देय दिले आहे आणि ते मंजूर केले आहे.
+              </div>
+              <div class="tab-pane fade" id="pills-phase" role="tabpanel" aria-labelledby="pills-phase-tab">
+                <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
+                  <thead>
+                    <tr>
+                      <th scope="col" data-sortable="true">Step 1</th>
+                      <th scope="col" data-sortable="true">Step 2</th>
+                      <th scope="col" data-sortable="true">Step 3</th>
+                      <th scope="col" data-sortable="true">Step 4</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>पूर्ण</td>
+                      <td>पूर्ण</td>
+                      <td>पूर्ण </td>
+                      <td>पूर्ण</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane fade  show active" id="pills-audit" role="tabpanel" aria-labelledby="pills-audit-tab">
+                <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
+                  <thead>
+                    <tr>
+                      <th scope="col" data-sortable="true">Audit 1</th>
+                      <th scope="col" data-sortable="true">Audit 2</th>
+                      <th scope="col" data-sortable="true">Audit 3</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                    
+                      <td>{% if ser_audit %}
+                      पूर्ण
+                      {% else %}
+                    अनिर्णित<a class="pay" href="{% url 'portal:servilance1_pay' %}">Go to Audit One</a>
+                    {% endif %}
+                    </td>
+                      <td>{% if ser_audit_two %}
+                      पूर्ण
+                      {% elif ser_audit %}
+                    अनिर्णित<a class="pay" href="{% url 'portal:servilance2_pay' %}">Go to Audit Two</a>
+                    {% else %}
+                    अनिर्णित
+                    {% endif %}</td>
+                      <td>{% if ser_audit_three %}
+                      पूर्ण
+                      {% elif ser_audit_two %}
+                       अनिर्णित<a class="pay" href="{% url 'portal:servilance3_pay' %}">Go to Audit Three</a>
+                      {% else %}
+                   अनिर्णित
+                    {% endif %}</td>
+                    </tr>
+                  </tbody>
+                </table >
+              </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
+{% endblock javascript %}

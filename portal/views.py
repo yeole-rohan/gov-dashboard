@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView
-from .models import User, Taluka, Panchayat, Agency, Confirmation, Payment, Grampanchayat, Audit
-from .forms import GPSignUPForm, CEOSignUpForm, S2SignUpForm, ObservarSignUpForm, PublicForm, GovermentForm, CertifiedForm, ConfirmationForm, PaymentForm, PaymentApproveForm, UTRapproveForm, AuditForm, AuditSelectForm, AuditEditForm
+from .models import User, Taluka, Panchayat, Agency, Confirmation, Payment, Grampanchayat, Audit, PrivateAgency, ServilencePayment,ServilenceAudit
+from .forms import GPSignUPForm, CEOSignUpForm, S2SignUpForm, ObservarSignUpForm, PublicForm, GovermentForm, CertifiedForm, ConfirmationForm, PaymentForm, PaymentApproveForm, UTRapproveForm, AuditForm, AuditSelectForm, AuditEditForm, PrivateAgencyForm, CEOApproveForm, ServilencePaymentForm, ServilenceAuditForm
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import login
@@ -16,6 +16,7 @@ from goverment import settings
 @login_required
 def home(request):
     confirmtwo, paytwo, confirmthree, paythree, auditthree, auditfour, confirmfour,payfour, payone = '', '','','','', '','','',''
+    get_certified_selected_agency, ser_audit, servilencepayment, servilencepayment_two, ser_audit_two, servilencepayment_three, ser_audit_three = '', '', '', '', '','', ''
     try:
         get_gov_selected_agency = Agency.objects.filter (user = request.user.id, choose_goverment='True')
         confirmone = Confirmation.objects.filter(user=request.user.id, phaseno__iexact=1)
@@ -28,6 +29,13 @@ def home(request):
         auditfour = Audit.objects.get(user=request.user.id, phaseno=4)
         confirmfour = Confirmation.objects.filter(user=request.user.id, phaseno__iexact=4)
         payfour = Payment.objects.get(user=request.user.id, phaseno=4)
+        get_certified_selected_agency = Agency.objects.filter (user = request.user.id, already_certified='True')
+        servilencepayment = ServilencePayment.objects.get(user=request.user.id, phaseno=1)
+        ser_audit = ServilenceAudit.objects.get(user=request.user.id, phoseno=1)
+        servilencepayment_two = ServilencePayment.objects.get(user=request.user.id, phaseno=2)
+        ser_audit_two = ServilenceAudit.objects.get(user=request.user.id, phoseno=2)
+        servilencepayment_three = ServilencePayment.objects.get(user=request.user.id, phaseno=3)
+        ser_audit_three = ServilenceAudit.objects.get(user=request.user.id, phoseno=3)
     except:
         pass 
     if request.user.is_gp:
@@ -58,7 +66,43 @@ def home(request):
                                                                 if auditfour.status =="unmatched":
                                                                     return redirect("portal:audit_miss_four")
                                                                 elif auditfour.status =="matched":
-                                                                    return redirect("portal:index")
+                                                                    if servilencepayment:
+                                                                        if servilencepayment.status == "unmatched":
+                                                                            return redirect("portal:servi_miss_one")
+                                                                        elif servilencepayment.status == "matched":
+                                                                            if ser_audit:
+                                                                                if ser_audit.status=="unmatched":
+                                                                                    return redirect("portal:servi_audit_miss")
+                                                                                elif ser_audit.status =='matched':
+                                                                                    if servilencepayment_two:
+                                                                                        if servilencepayment_two.status == "unmatched":
+                                                                                            return redirect("portal:servi_miss_two")
+                                                                                        elif servilencepayment_two.status == "matched":
+                                                                                            if ser_audit_two:
+                                                                                                if ser_audit_two.status=="unmatched":
+                                                                                                    return redirect("portal:servi_audit_miss_two")
+                                                                                                elif ser_audit_two.status =='matched':
+                                                                                                    if servilencepayment_three:
+                                                                                                        if servilencepayment_three.status == "unmatched":
+                                                                                                            return redirect("portal:servi_miss_three")
+                                                                                                        elif servilencepayment_three.status == "matched":
+                                                                                                            if ser_audit_three:
+                                                                                                                if ser_audit_three.status=="unmatched":
+                                                                                                                    return redirect("portal:servi_audit_miss_three")
+                                                                                                                elif ser_audit_three.status =='matched':
+                                                                                                                    return redirect('portal:servilence_dashboard')
+                                                                                                                return redirect("portal:servi_pending3")
+                                                                                                            return redirect("portal:upload_doc_three")
+                                                                                                        return redirect("portal:servi_pending3")
+                                                                                                    return redirect('portal:servilence_dashboard')
+                                                                                                return redirect("portal:servi_pending2")
+                                                                                            return redirect("portal:upload_doc_two")
+                                                                                        return redirect("portal:servi_pending2")
+                                                                                    return redirect('portal:servilence_dashboard')
+                                                                                return redirect("portal:servi_pending1")
+                                                                            return redirect("portal:upload_doc")
+                                                                        return redirect("portal:servi_pending1")
+                                                                    return redirect("portal:servilence_dashboard")
                                                                 return redirect("portal:audit_msg")
                                                             return redirect("portal:pending4")
                                                         return redirect("portal:pay4")
@@ -82,14 +126,57 @@ def home(request):
         if get_local_selected_agency:
             return redirect("portal:local")
     
-    get_certified_selected_agency = ''
+  
     try:
-        get_certified_selected_agency = Agency.objects.filter (user = request.user.id, choose_local='True')
+        get_certified_selected_agency = Agency.objects.filter (user = request.user.id, already_certified='True')
+        servilencepayment = ServilencePayment.objects.get(user=request.user.id, phaseno=1)
+        print(servilencepayment.status)
+        ser_audit = ServilenceAudit.objects.get(user=request.user.id, phoseno=1)
+        servilencepayment_two = ServilencePayment.objects.get(user=request.user.id, phaseno=2)
+        ser_audit_two = ServilenceAudit.objects.get(user=request.user.id, phoseno=2)
+        servilencepayment_three = ServilencePayment.objects.get(user=request.user.id, phaseno=3)
+        ser_audit_three = ServilenceAudit.objects.get(user=request.user.id, phoseno=3)
     except:
         pass
     if request.user.is_gp:
         if get_certified_selected_agency:
-            return redirect("portal:local")
+            if servilencepayment:
+                if servilencepayment.status == "unmatched":
+                    return redirect("portal:servi_miss_one")
+                elif servilencepayment.status == "matched":
+                    if ser_audit:
+                        if ser_audit.status=="unmatched":
+                            return redirect("portal:servi_audit_miss")
+                        elif ser_audit.status =='matched':
+                            if servilencepayment_two:
+                                if servilencepayment_two.status == "unmatched":
+                                    return redirect("portal:servi_miss_two")
+                                elif servilencepayment_two.status == "matched":
+                                    if ser_audit_two:
+                                        if ser_audit_two.status=="unmatched":
+                                            return redirect("portal:servi_audit_miss_two")
+                                        elif ser_audit_two.status =='matched':
+                                            if servilencepayment_three:
+                                                if servilencepayment_three.status == "unmatched":
+                                                    return redirect("portal:servi_miss_three")
+                                                elif servilencepayment_three.status == "matched":
+                                                    if ser_audit_three:
+                                                        if ser_audit_three.status=="unmatched":
+                                                            return redirect("portal:servi_audit_miss_three")
+                                                        elif ser_audit_three.status =='matched':
+                                                            return redirect('portal:servilence_dashboard')
+                                                        return redirect("portal:servi_pending3")
+                                                    return redirect("portal:upload_doc_three")
+                                                return redirect("portal:servi_pending3")
+                                            return redirect('portal:servilence_dashboard')
+                                        return redirect("portal:servi_pending2")
+                                    return redirect("portal:upload_doc_two")
+                                return redirect("portal:servi_pending2")
+                            return redirect('portal:servilence_dashboard')
+                        return redirect("portal:servi_pending1")
+                    return redirect("portal:upload_doc") 
+                return redirect("portal:servi_pending1")
+            return redirect("portal:servilence_dashboard")
     gov_choose = GovermentForm()
     pub_form = PublicForm()
     certified = CertifiedForm()
@@ -120,28 +207,295 @@ def home(request):
 
     return render(request, template_name="dashboard.html", context={'pub_form' : pub_form, 'gov_choose' : gov_choose, 'certified' : certified})
 
+def ser_audit_edit(request, aud_id):
+    audit = AuditEditForm()
+    if request.method == "POST":
+        current_user = get_object_or_404(User, id=request.user.id)
+        audit = AuditEditForm(request.POST or None, request.FILES)
+        if audit.is_valid():
+            files = audit.cleaned_data['files']
+            content_type  = files.content_type.split('/')[1]
+            if content_type in settings.CONTENT_TYPES:
+                if files.size > int(settings.MAX_UPLOAD_SIZE):
+                    messages.error(request, "Please keep filesize under {}. Current filesize {}".format(filesizeformat(settings.MAX_UPLOAD_SIZE), filesizeformat(files.size)))
+                else:
+                    ServilenceAudit.objects.filter(id=aud_id).update(document=files, status="pending")
+                    return redirect('portal:servi_pending1')
+            else:
+                messages.error(request, "File is not supported")
+    return render(request, template_name="servilence/servi-audit-edit.html", context={'audit_form' : audit})
+
+def ser_audit_edit_three(request, aud_id):
+    audit = AuditEditForm()
+    if request.method == "POST":
+        current_user = get_object_or_404(User, id=request.user.id)
+        audit = AuditEditForm(request.POST or None, request.FILES)
+        if audit.is_valid():
+            files = audit.cleaned_data['files']
+            content_type  = files.content_type.split('/')[1]
+            if content_type in settings.CONTENT_TYPES:
+                if files.size > int(settings.MAX_UPLOAD_SIZE):
+                    messages.error(request, "Please keep filesize under {}. Current filesize {}".format(filesizeformat(settings.MAX_UPLOAD_SIZE), filesizeformat(files.size)))
+                else:
+                    ServilenceAudit.objects.filter(id=aud_id).update(document=files,status="pending")
+                    return redirect('portal:servi_pending3')
+            else:
+                messages.error(request, "File is not supported")
+    return render(request, template_name="servilence/servi-audit-edit-two.html", context={'audit_form' : audit})
+
+def ser_audit_edit_two(request, aud_id):
+    audit = AuditEditForm()
+    if request.method == "POST":
+        current_user = get_object_or_404(User, id=request.user.id)
+        audit = AuditEditForm(request.POST or None, request.FILES)
+        if audit.is_valid():
+            files = audit.cleaned_data['files']
+            content_type  = files.content_type.split('/')[1]
+            if content_type in settings.CONTENT_TYPES:
+                if files.size > int(settings.MAX_UPLOAD_SIZE):
+                    messages.error(request, "Please keep filesize under {}. Current filesize {}".format(filesizeformat(settings.MAX_UPLOAD_SIZE), filesizeformat(files.size)))
+                else:
+                    ServilenceAudit.objects.filter(id=aud_id).update(document=files,status="pending")
+                    return redirect('portal:servi_pending2')
+            else:
+                messages.error(request, "File is not supported")
+    return render(request, template_name="servilence/servi-audit-edit-two.html", context={'audit_form' : audit})
+
+def servi_audit_miss(request):
+    audit = ServilenceAudit.objects.get(user=request.user.id, status="unmatched",phoseno=1)
+    return render(request, template_name="servilence/servi_audit_miss.html", context={'audit' :audit})
+
+def servi_audit_miss_three(request):
+    audit = ServilenceAudit.objects.get(user=request.user.id, status="unmatched",phoseno=3)
+    print(audit)
+    return render(request, template_name="servilence/servi_audit_miss-three.html", context={'audit' :audit})
+
+def servi_audit_miss_two(request):
+    audit = ServilenceAudit.objects.get(user=request.user.id, status="unmatched",phoseno=2)
+    print(audit)
+    return render(request, template_name="servilence/servi_audit_miss-two.html", context={'audit' :audit})
+
+''' Servilence Dashboard '''
+def servilence_dashboard(request):
+    ser_audit = ServilenceAudit.objects.filter(user=request.user.id, phoseno=1)
+    ser_audit_two = ServilenceAudit.objects.filter(user=request.user.id, phoseno=2)
+    ser_audit_three = ServilenceAudit.objects.filter(user=request.user.id, phoseno=3)
+    return render(request, template_name="servilence/servilence-dashboard.html", context={'ser_audit' : ser_audit, 'ser_audit_two' : ser_audit_two, 'ser_audit_three' : ser_audit_three}) 
+
+def upload_doc_three(request):
+    audit = ServilenceAuditForm()
+    if request.method == "POST":
+        current_user = get_object_or_404(User, id=request.user.id)
+        audit = ServilenceAuditForm(request.POST or None, request.FILES)
+        if audit.is_valid():
+            files = audit.cleaned_data['document']
+            content_type  = files.content_type.split('/')[1]
+            if content_type in settings.CONTENT_TYPES:
+                if files.size > int(settings.MAX_UPLOAD_SIZE):
+                    messages.error(request, "Please keep filesize under {}. Current filesize {}".format(filesizeformat(settings.MAX_UPLOAD_SIZE), filesizeformat(files.size)))
+                else:
+                    audit = audit.save(commit=False)
+                    audit.phoseno = 3
+                    audit.save()
+                    audit.user.add(current_user.id)
+                    audit.save()
+                    return redirect('portal:servi_pending3')
+            else:
+                messages.error(request, "File is not supported")
+    return render(request, template_name="servilence/upload-doc-three.html", context={"audit" : audit})
+
+def upload_doc_two(request):
+    audit = ServilenceAuditForm()
+    if request.method == "POST":
+        current_user = get_object_or_404(User, id=request.user.id)
+        audit = ServilenceAuditForm(request.POST or None, request.FILES)
+        print(audit.is_valid())
+        if audit.is_valid():
+            files = audit.cleaned_data['document']
+            content_type  = files.content_type.split('/')[1]
+            if content_type in settings.CONTENT_TYPES:
+                if files.size > int(settings.MAX_UPLOAD_SIZE):
+                    messages.error(request, "Please keep filesize under {}. Current filesize {}".format(filesizeformat(settings.MAX_UPLOAD_SIZE), filesizeformat(files.size)))
+                else:
+                    audit = audit.save(commit=False)
+                    audit.phoseno = 2
+                    audit.save()
+                    audit.user.add(current_user.id)
+                    audit.save()
+                    return redirect('portal:servi_pending1')
+            else:
+                messages.error(request, "File is not supported")
+    return render(request, template_name="servilence/upload-doc-two.html", context={"audit" : audit})
+
+def upload_doc(request):
+    audit = ServilenceAuditForm()
+    if request.method == "POST":
+        current_user = get_object_or_404(User, id=request.user.id)
+        audit = ServilenceAuditForm(request.POST or None, request.FILES)
+        print(audit.is_valid())
+        if audit.is_valid():
+            files = audit.cleaned_data['document']
+            content_type  = files.content_type.split('/')[1]
+            if content_type in settings.CONTENT_TYPES:
+                if files.size > int(settings.MAX_UPLOAD_SIZE):
+                    messages.error(request, "Please keep filesize under {}. Current filesize {}".format(filesizeformat(settings.MAX_UPLOAD_SIZE), filesizeformat(files.size)))
+                else:
+                    audit = audit.save(commit=False)
+                    audit.phoseno = 1
+                    audit.save()
+                    audit.user.add(current_user.id)
+                    audit.save()
+                    return redirect('portal:servi_pending1')
+            else:
+                messages.error(request, "File is not supported")
+    return render(request, template_name="servilence/upload-doc.html", context={"audit" : audit})
+
 ''' S2 dashboard '''
 def s2dashboard(request):
     all_pending_payments = Payment.objects.filter(utrno__isnull=False, status__iexact='Pending')
+    servilencePay_pending = ServilencePayment.objects.filter(utrno__isnull=False, status__iexact='Pending')
     all_matched_payments = Payment.objects.filter(utrno__isnull=False, status__iexact='Matched')
+    all_matched_servilencePay = ServilencePayment.objects.filter(utrno__isnull=False, status__iexact='Matched')
     all_unmatched_payments = Payment.objects.filter(utrno__isnull=False, status__iexact='Unmatched')
+    all_unmatched_servilencePay = ServilencePayment.objects.filter(utrno__isnull=False, status__iexact='Unmatched')
     all_pending_audits = Audit.objects.filter(status__iexact='Pending')
     all_matched_audits = Audit.objects.filter(status__iexact='Matched')
-    
+    all_pending_audits_ser = ServilenceAudit.objects.filter(status__iexact='Pending')
+    all_matched_audits_ser = ServilenceAudit.objects.filter(status__iexact='Matched')
 
-    return render(request, template_name="s2/s2-dashboard.html", context={'all_pending_payments': all_pending_payments, 'all_matched_payments' : all_matched_payments, 'all_unmatched_payments' : all_unmatched_payments, 'all_pending_audits' : all_pending_audits, 'all_matched_audits' : all_matched_audits})
+    return render(request, template_name="s2/s2-dashboard.html", context={'all_pending_payments': all_pending_payments, 'all_matched_payments' : all_matched_payments, 'all_unmatched_payments' : all_unmatched_payments, 'all_pending_audits' : all_pending_audits, 'all_matched_audits' : all_matched_audits, 'servilencePay_pending' : servilencePay_pending,'all_unmatched_servilencePay' : all_unmatched_servilencePay,'all_matched_servilencePay' : all_matched_servilencePay,'all_matched_audits_ser': all_matched_audits_ser, 'all_pending_audits_ser' : all_pending_audits_ser})
 
+
+def servilance3_pay(request):
+    servi_pay = ServilencePaymentForm()
+    if request.method == "POST":
+        current_user = get_object_or_404(User, id=request.user.id)
+        servi_pay = ServilencePaymentForm(request.POST or None)
+        if servi_pay.is_valid():
+            servi_pay = servi_pay.save(commit=False)
+            servi_pay.phaseno = 3
+            servi_pay.save()
+            servi_pay.user.add(current_user.id)
+            servi_pay.save()
+            return redirect('portal:servi_pending3')
+    return render(request, template_name="servilence/servilence-pay-three.html", context={"servi_pay" : servi_pay})
+
+def servilance2_pay(request):
+    servi_pay = ServilencePaymentForm()
+    if request.method == "POST":
+        current_user = get_object_or_404(User, id=request.user.id)
+        servi_pay = ServilencePaymentForm(request.POST or None)
+        if servi_pay.is_valid():
+            servi_pay = servi_pay.save(commit=False)
+            servi_pay.phaseno = 2
+            servi_pay.save()
+            servi_pay.user.add(current_user.id)
+            servi_pay.save()
+            return redirect('portal:servi_pending2')
+    return render(request, template_name="servilence/servilence-pay-two.html", context={"servi_pay" : servi_pay})
+
+def servilance1_pay(request):
+    servi_pay = ServilencePaymentForm()
+    if request.method == "POST":
+        current_user = get_object_or_404(User, id=request.user.id)
+        servi_pay = ServilencePaymentForm(request.POST or None)
+        if servi_pay.is_valid():
+            servi_pay = servi_pay.save(commit=False)
+            servi_pay.phaseno = 1
+            servi_pay.save()
+            servi_pay.user.add(current_user.id)
+            servi_pay.save()
+            return redirect('portal:servi_pending1')
+    return render(request, template_name="servilence/servilence-pay-one.html", context={"servi_pay" : servi_pay})
+
+def servi_utr_edit(request, id):
+    utrform = UTRapproveForm() 
+    if request.method == "POST":
+        utrform = UTRapproveForm(request.POST or None)
+        if utrform.is_valid():
+            utr_no = utrform.cleaned_data['utr']
+            ServilencePayment.objects.filter(user=request.user.id, id=id).update(status="pending", utrno=utr_no)
+            return redirect('portal:servi_pending1')
+    return render(request, template_name="servilence/servi-utr-edit-one.html", context={'utrform' : utrform})
+
+def servi_utr_edit_two(request, id):
+    utrform = UTRapproveForm()
+    if request.method == "POST":
+        utrform = UTRapproveForm(request.POST or None)
+        if utrform.is_valid():
+            utr_no = utrform.cleaned_data['utr']
+            ServilencePayment.objects.filter(user=request.user.id, id=id).update(status="pending", utrno=utr_no)
+            return redirect('portal:servi_pending2')
+    return render(request, template_name="servilence/servi-utr-edit-two.html", context={'utrform': utrform})
+
+def servi_utr_edit_three(request, id):
+    utrform = UTRapproveForm()
+    if request.method == "POST":
+        utrform = UTRapproveForm(request.POST or None)
+        if utrform.is_valid():
+            utr_no = utrform.cleaned_data['utr']
+            ServilencePayment.objects.filter(user=request.user.id, id=id).update(status="pending", utrno=utr_no)
+            return redirect('portal:servi_pending3')
+    return render(request, template_name="servilence/servi-utr-edit-three.html", context={'utrform': utrform})
+
+def servi_pending1(request):
+    return render(request, template_name="servilence/pending1.html", context={})
+
+def servi_pending3(request):
+    return render(request, template_name="servilence/pending3.html", context={})
+
+def servi_pending2(request):
+    return render(request, template_name="servilence/pending2.html", context={})
+
+def ser_audit_approve(request, audit_id):
+    audit_form = AuditSelectForm()
+    if request.method == "POST":
+        audit_form = AuditSelectForm(request.POST or None)
+        if audit_form.is_valid():
+            select_check = audit_form.cleaned_data['select_check']
+            ServilenceAudit.objects.filter(id=audit_id).update(status=select_check) 
+            return redirect('portal:s2dashboard')
+    return render(request, template_name="servilence/ser-audit-approve.html", context={'audit_form' : audit_form})
+
+def servi_miss_three(request):
+    pay = ServilencePayment.objects.get(phaseno=3, user=request.user.id,status="unmatched")
+    return render(request, template_name="servilence/ser-three-miss.html", context={'pay' : pay})
+
+def servi_miss_two(request):
+    pay = ServilencePayment.objects.get(phaseno=2, user=request.user.id,status="unmatched")
+    return render(request, template_name="servilence/ser-two-miss.html", context={'pay' : pay})
+
+def servi_miss_one(request):
+    pay = ServilencePayment.objects.get(user=request.user.id, phaseno=1, status="unmatched")
+    return render(request, template_name="servilence/ser-one-miss.html", context={'pay' : pay})
+''' ceo dashboard'''
+
+def ceodashboard(request):
+    get_forms = PrivateAgency.objects.filter(status__icontains="pending")
+    print(get_forms)
+    return render(request, template_name="ceo-dashboard.html", context={'get_forms' : get_forms})
 '''observar'''
+
 def observar(request):
     all_matched_payments = Payment.objects.filter(utrno__isnull=False, status__iexact='Matched')
     all_users = Grampanchayat.objects.all().count()
     get_count_confirm = Payment.objects.filter(phaseno=1).count()
-    get_count_confirm = Payment.objects.filter(phaseno=1).count()
     get_count_confirm_pending = Confirmation.objects.filter(phaseno=1).count()
     get_count_local = Agency.objects.filter(choose_local=True).count()
     return render(request, template_name="ob-dashboard.html", context={'all_matched_payments' : all_matched_payments, 'get_count_confirm' : get_count_confirm, 'get_count_confirm_pending' : get_count_confirm_pending, 'all_users' : all_users,'get_count_local': get_count_local})
+''' approve ceo'''
 
+def approve_ceo(request, id):
+    form = CEOApproveForm()
+    if request.method == "POST":
+        form = CEOApproveForm(request.POST or None)
+        if form.is_valid():
+            ceo_app = form.cleaned_data['ceo_app']
+            PrivateAgency.objects.filter(id=id).update(status=ceo_app)  
+            return redirect('portal:ceodashboard')
+    return render(request, template_name="ceo/ceo-approve.html", context={'form' : form})
 ''' Index Page '''
+
 def index(request):
 
     phaseonepay = Payment.objects.filter(user=request.user.id, phaseno=1)
@@ -152,7 +506,20 @@ def index(request):
     return render(request, template_name="index.html", context={'phaseonepay' : phaseonepay, 'phasetwopay' : phasetwopay, 'phasethreepay' : phasethreepay, 'phasefourpay' : phasefourpay})
 
 def local(request):
-    return render(request, template_name="local/local.html", context={})
+    get_approved = PrivateAgency.objects.filter(user = request.user.id, status__icontains="Matched")
+    get_agency = PrivateAgency.objects.filter(user = request.user.id, status__icontains="Pending")
+    private_form = PrivateAgencyForm()
+    if request.method == "POST":
+        private_form = PrivateAgencyForm(request.POST or None, request.FILES)
+        print(private_form.is_valid())
+        if private_form.is_valid():
+            print("vfavshv")
+            private_form = private_form.save(commit=False) 
+            private_form.user = Grampanchayat.objects.get(user_id=request.user.id) 
+            private_form.save()
+            return redirect('portal:local')
+    return render(request, template_name="local/local.html", context={"private_form" : private_form,'get_agency' : get_agency,'get_approved' : get_approved})
+
 def audit_edit_four(request, id):
     audit = AuditEditForm()
     if request.method == "POST":
@@ -490,8 +857,9 @@ def utr_matched(request):
     return render(request, template_name="UTR/pay-cofirm.html", context={})
 
 ''' S2 confirms payments '''
-def confirm_payment(request, pay_id, user_id): 
+def confirm_payment(request, pay_id, user_id):
     get_payment = Payment.objects.get(id=pay_id)
+
     pay_approve = PaymentApproveForm()
     if request.method == "POST":
         pay_approve = PaymentApproveForm(request.POST or None)
@@ -502,6 +870,19 @@ def confirm_payment(request, pay_id, user_id):
             Payment.objects.filter(user=get_gp_user, id=pay_id).update(status=pay_choice, remark=remark)
             return redirect('portal:s2dashboard' )
     return render(request, template_name="s2/s2-confirm.html", context={'get_payment' : get_payment, 'pay_approve' : pay_approve})
+
+def servi_pay_confirm(request, user_id,pay_id):
+    get_payment = ServilencePayment.objects.get(id=pay_id)
+    pay_approve = PaymentApproveForm()
+    if request.method == "POST":
+        pay_approve = PaymentApproveForm(request.POST or None)
+        get_gp_user = get_object_or_404(Grampanchayat, user_id=user_id)
+        if pay_approve.is_valid():
+            pay_choice = pay_approve.cleaned_data['pay']
+            remark = pay_approve.cleaned_data['remark']
+            ServilencePayment.objects.filter(user=get_gp_user, id=pay_id).update(status=pay_choice, remark=remark)
+            return redirect('portal:s2dashboard' )
+    return render(request, template_name="servilence/servi-utr-edit.html", context={'pay_approve' : pay_approve,'get_payment' : get_payment})
 
 ''' Stage One Confirmation '''
 def confirm1(request):

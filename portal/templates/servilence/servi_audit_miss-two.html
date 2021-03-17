@@ -1,0 +1,47 @@
+{% extends '../base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="error">
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+        <div class="outer payments-div">
+        <div class="info">
+            <p>Surveillance Audit for Two Year </p>
+            <p class="sub-info pos-rel">सर्विलन्स ऑणडर्साठी प्रणत ग्रामपंचायत प्रणत िर </p>
+            <p class="count">₹ 7000 + ₹ 1,260 <small>18% GST</small> = 8260.00
+
+  <h3 class="selection"> Document Approval Status From S2 Infotech International Limited</h3>
+   <span class="mismatched">You uploaded wrong document.</span>
+  <button type="button" class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+  <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+</svg></button>
+             <a type="button" class="btn btn-light" href="{% url 'portal:ser_audit_edit_two' audit.id %}">edit</a>
+        </div>
+       
+    </div>
+{% endblock content %}
+

@@ -1,6 +1,33 @@
 {% extends '../base.html' %}
-{% block content %}{{UTRapproveForm}}
+{% block content %}
+{% load static %}
     <div class="container">
+      <div class="error">
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
         <div class="outer payments-div">
             <h3 class="selection">स्टेज पेमेंट change</h3>
             <div class="agency-selection">
@@ -19,7 +46,7 @@
                                 <form method="POST">
                                     {% csrf_token %}
                                     {{utrform.utr}}
-                                    <button type="submit" class="sel-rtgs pay">Submit</button>
+                                    <button type="submit" class="sel-rtgs pay" disabled="disabled">Submit</button>
                                 </form>
                             </div>
                         </div>
@@ -30,3 +57,8 @@
         </div>
     </div>
 {% endblock content %}
+{% block javascript %}
+    <script src="{% static 'js/jquery.min.js' %}"></script>    
+    <script src="{% static 'js/main.js' %}"></script>
+
+{% endblock javascript %}

@@ -1,4 +1,4 @@
-from .models import User, Grampanchayat, District, Taluka, Panchayat, Payment, Observar, CEO, Agency, Confirmation, S2, Audit
+from .models import User, Grampanchayat, District, Taluka, Panchayat, Payment, Observar, CEO, Agency, Confirmation, S2, Audit, PrivateAgency, ServilencePayment, ServilenceAudit
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.db import transaction
@@ -9,12 +9,13 @@ PAYMENT_STATUS = [
     ('matched' , 'Matched'),
     ('unmatched' , 'Unmatched')
 ]
-
+CEO_STATUS = [
+    ('matched' , 'Matched'),
+]
 DESIGNATION = [
     ('gram_sevak', 'Gram Sevak'),
     ('gram_vikas_adhikari', 'Gram Vikas Adhikari'),
 ]
-AUDIT_CHOICE = [[val.id, 'Approve']  for val in Audit.objects.filter(status="pending")]
 class GPSignUPForm(UserCreationForm):
     first_name = forms.CharField( max_length=100, required=True)
     last_name = forms.CharField( max_length=100, required=True)
@@ -197,3 +198,24 @@ class AuditSelectForm(forms.Form):
         
 class AuditEditForm(forms.Form):
     files = forms.FileField( required=True)
+
+class PrivateAgencyForm(forms.ModelForm):
+    
+    class Meta:
+        model = PrivateAgency
+        fields = ("agency_name","cost","cert_cost","address", 'phone_number', 'doc','email')
+
+class CEOApproveForm(forms.Form):
+    ceo_app = forms.ChoiceField(choices=CEO_STATUS, required=False)
+
+class ServilencePaymentForm(forms.ModelForm):
+    
+    class Meta:
+        model = ServilencePayment
+        fields = ("utrno",)
+
+class ServilenceAuditForm(forms.ModelForm):
+    
+    class Meta:
+        model = ServilenceAudit
+        fields = ("document",)

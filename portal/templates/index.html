@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.css">
 {% endblock css %}
 {% block content %}
+{% load static %}
 <div class="container">
         <div class="outer">
             <h3 class="selection">Your Progress yet</h3>
@@ -25,7 +26,8 @@
             </li>
              {% comment %} Audit {% endcomment %}
             <li class="nav-item">
-              <a class="nav-link disabled" id="pills-audit-tab" data-toggle="pill" href="#pills-audit" role="tab" aria-controls="pills-audit" aria-selected="false">Audit</a>
+              <a class="nav-link {% if not phasefourpay %}disabled
+              {% endif %}" id="pills-audit-tab" data-toggle="pill" href="#pills-audit" role="tab" aria-controls="pills-audit" aria-selected="false">Audit</a>
             </li>
             
           </ul>
@@ -33,54 +35,58 @@
              <div class="tab-pane fade show active" id="pills-agency" role="tabpanel" aria-labelledby="pills-agency-tab">
               आपण सरकारी निवडलेली एजन्सी निवडली आहे
              </div>
-             <div class="tab-pane fade" id="pills-payment" role="tabpanel" aria-labelledby="pills-payment-tab">
-              आपण आगाऊ देय दिले आहे आणि ते मंजूर केले आहे.
-             </div>
+              <div class="tab-pane fade" id="pills-payment" role="tabpanel" aria-labelledby="pills-payment-tab">
+                आपण आगाऊ देय दिले आहे आणि ते मंजूर केले आहे.
+              </div>
               <div class="tab-pane fade" id="pills-phase" role="tabpanel" aria-labelledby="pills-phase-tab">
-               <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
-                <thead>
-                  <tr>
-                    <th scope="col" data-sortable="true">Step 1</th>
-                    <th scope="col" data-sortable="true">Step 2</th>
-                    <th scope="col" data-sortable="true">Step 3</th>
-                    <th scope="col" data-sortable="true">Step 4</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>पूर्ण</td>
-                    <td>
-                      {% if phasetwopay %}
-                          पूर्ण
-                      {% else %}
-                     अनिर्णित
-                        <a class="pay" href="{% url 'portal:confirm2' %}">Go to Step Two</a>
-                      {% endif %}</td>
-                    <td>
-                      {% if phasethreepay %}
-                        पूर्ण
-                        {% elif phasetwopay %}
-                        अनिर्णित
-                        <a class="pay" href="{% url 'portal:confirm3' %}">Go to Step Three</a>
-                      {% else %}
-                        अनिर्णित
-                      {% endif %} </td>
-                    <td>
-                      {% if phasefourpay %}
-                        पूर्ण
-                       {% elif phasethreepay %}
-                        अनिर्णित
-                        <a class="pay" href="{% url 'portal:confirm4' %}">Go to Step Four</a>
-                      {% else %}
+                <table data-toggle="table" data-custom-sort="customSort" data-pagination="true" data-search="true">
+                  <thead>
+                    <tr>
+                      <th scope="col" data-sortable="true">Step 1</th>
+                      <th scope="col" data-sortable="true">Step 2</th>
+                      <th scope="col" data-sortable="true">Step 3</th>
+                      <th scope="col" data-sortable="true">Step 4</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>पूर्ण</td>
+                      <td>
+                        {% if phasetwopay %}
+                            पूर्ण
+                        {% else %}
                       अनिर्णित
-                      
-                      {% endif %}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-             </div>
-             
+                          <a class="pay" href="{% url 'portal:confirm2' %}">Go to Step Two</a>
+                        {% endif %}</td>
+                      <td>
+                        {% if phasethreepay %}
+                          पूर्ण
+                          {% elif phasetwopay %}
+                          अनिर्णित
+                          <a class="pay" href="{% url 'portal:confirm3' %}">Go to Step Three</a>
+                        {% else %}
+                          अनिर्णित
+                        {% endif %} </td>
+                      <td>
+                        {% if phasefourpay %}
+                          पूर्ण
+                        {% elif phasethreepay %}
+                          अनिर्णित
+                          <a class="pay" href="{% url 'portal:confirm4' %}">Go to Step Four</a>
+                        {% else %}
+                        अनिर्णित
+                        {% endif %}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="tab-pane fade" id="pills-audit" role="tabpanel" aria-labelledby="pills-audit-tab">
+                 <img class="img-fluid" src="{% static '/img/green_circle_tick.png' %}">
+                  <p>Your all steps are completed, now lets move to servilence audit. click below to go to first audit.</p>
+                  <a type="button" class="btn btn-light" href="{% url 'portal:servilence_dashboard' %}">Dashboard</a>
+              </div>
         </div>
     </div>
 {% endblock content %}

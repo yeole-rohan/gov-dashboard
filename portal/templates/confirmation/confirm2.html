@@ -1,27 +1,64 @@
 {% extends '.././base.html' %}
 {% block content %}
+{% load static %}
     <div class="container">
+      <div class="error">
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
         <div class="outer payments-div">
             <h3 class="selection">Phase</h3>
-            <small>Step two</small>
+           
             <div class="row">
                 <div class="col-md-8">
                     <div class="info">
+                     <small>Step two</small>
                         <p>प्रमाणिकरण </p>
                         <p class="sub-info pos-rel">ग्रामपंचायतीला ISO ९००१ : २०१५ प्रमाणिकरणासाठी आवश्यक असणारी सर्व कामे पूर्ण करणे</p>
                         <p class="count">₹ 7788.00 + ₹ 1188<small>18% GST</small> = 8976.00</p>
                     </div>
                 </div>
+                <div class="col-md-4">
+                <div class="form-group form-check text-center">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{confirm.yes_no}}
+                        <label class="form-check-label" for="exampleCheck1">आम्ही प्रशिक्षण व कागदपत्रे पूर्ण केली आहेत. </label>
+                        </br>
+                        <button type="submit" id="confirm2" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+                </div>
             </div> 
             </br></br>
-            <div class="form-group form-check text-center">
-                <form method="POST">
-                    {% csrf_token %}
-                    {{confirm.yes_no}}<label class="form-check-label" for="exampleCheck1">आम्ही प्रशिक्षण व कागदपत्रे पूर्ण केली आहेत. </label>
-                    </br>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
+            
         </div>
     </div>
 {% endblock content %}
+{% block javascript %}
+    <script src="{% static 'js/jquery.min.js' %}"></script>    
+    <script src="{% static 'js/main.js' %}"></script>
+
+{% endblock javascript %}

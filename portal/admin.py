@@ -1,10 +1,18 @@
 from django.contrib import admin
-from .models import User, Grampanchayat, Observar, District, Taluka, Panchayat, Payment, Agency, Confirmation, Audit
+from .models import User, Grampanchayat, Observar, District, Taluka, Panchayat, Payment, Agency, Confirmation, Audit, PrivateAgency, ServilencePayment, ServilenceAudit
 # Register your models here.
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('id','is_gp', 'is_observar', 'is_s2', 'is_staff', 'last_login', 'is_superuser', 'username','first_name','last_name', 'email', 'is_active', 'date_joined','password')
+
+@admin.register(ServilenceAudit)
+class ServilenceAuditAdmin(admin.ModelAdmin):
+    list_display= ('id', 'date','document', 'phoseno', 'status')
+ 
+@admin.register(ServilencePayment)
+class ServilencePaymentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'date', 'phaseno', 'utrno','remark','status')
 
 @admin.register(Grampanchayat)
 class GrampanchayatAdmin(admin.ModelAdmin):
@@ -42,3 +50,6 @@ class ConfirmationAdmin(admin.ModelAdmin):
 class AuditAdmin(admin.ModelAdmin):
     list_display = ('id','status', 'date', 'document', 'phaseno')
 
+@admin.register(PrivateAgency)
+class PrivateAgencyAdmin(admin.ModelAdmin):
+    list_display=('id', 'date', 'status','agency_name', 'email', 'address', 'phone_number', 'doc','cert_cost','cost')
